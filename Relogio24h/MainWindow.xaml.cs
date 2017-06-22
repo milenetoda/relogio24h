@@ -103,7 +103,7 @@ namespace Relogio24h
         private void mostrahoras(int digito)
         {
             int angulo = digito * (360 / 24);
-            var ponto = getPoint(angulo, size*0.5);
+            var ponto = getPoint(angulo, size*1);
 
             var numero = new Label();
 
