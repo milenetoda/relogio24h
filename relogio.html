@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+    html,body{
+        margin: 0;
+        height:100%;
+        overflow: hidden;
+    }
+    #myCanvas {
+        display: block;
+        margin: auto;
+    }
+</style>
+</head>
+<body>
+
+<canvas id="myCanvas"></canvas>
+
+<script>
+var size = 0;
+var canvassize = 0;
+var myCanvas = document.getElementById("myCanvas");
+
+
+window.onresize = setCanvasSize;
+
+function setCanvasSize(){
+    var w = document.body.clientWidth;
+    var h = document.body.clientHeight;
+    canvassize = Math.min(w, h);
+    myCanvas.setAttribute("width", canvassize);
+    myCanvas.setAttribute("height", canvassize);
+    size = canvassize/2;
+}
+
+setCanvasSize();
+
+var ctx = myCanvas.getContext("2d");
+var now = new Date();
+desenharelogio(now.getHours(), now.getMinutes(), now.getSeconds());
+
+function desenharelogio(horas, minutos, segundos){
+    ctx.clearRect(0, 0, size*2, size*2);
+    ctx.beginPath();
+    ctx.arc(size, size,size*0.99,0,2*Math.PI);
+    ctx.textAlign="center"; 
+    ctx.textBaseline="middle"; 
+    
+    for (var i = 0 ; i < 24 ; i++)
+    {
+        mostrahoras(i, ctx);
+    }
+
+    for (var i = 0 ; i < 60 ; i++)
+    {
+        mostraminutos(i, ctx);
+        mostrasegundos(i, ctx);
+    }
+    
+    sethoras(horas);
+    setminutos(minutos);
+    setsegundos(segundos);
+    
+    ctx.stroke();
+}
+
+setInterval(function(){ 
+    var now = new Date();
+    desenharelogio(now.getHours(), now.getMinutes(), now.getSeconds());
+
+}, 500);
+
+
+
+function sethoras(hora)
+{
+    var hipotenusaHora = size*0.8;
+    var angulo = hora * (360/24);
+    var ponto = getPoint(angulo, hipotenusaHora);
+    var x2 = ponto.x + size;
+    var y2 = size - ponto.y;
+
+    drawline(x2, y2, "black", 5 );
+}
+
+function setminutos(minuto)
+{
+    var hipotenusaMinuto = size*0.65;
+    var angulo = minuto * (360/60);
+    var ponto = getPoint(angulo, hipotenusaMinuto);
+    var x2 = ponto.x + size;
+    var y2 = size - ponto.y;
+    drawline(x2, y2, "black");
+}
+
+function setsegundos(segundo)
+{
+    var hipotenusaSegundo = size*0.45;
+    var angulo = segundo * (360 / 60);
+    var ponto = getPoint(angulo, hipotenusaSegundo);
+    var x2 = ponto.x + size;
+    var y2 = size - ponto.y;  
+    drawline(x2, y2, "red");
+}
+
+function drawline(x2, y2, color, width)
+{
+    width = width || 1;
+
+    ctx.beginPath();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = width;
+    ctx.moveTo(size,size);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+    ctx.closePath();
+}
+
+
+function mostrahoras(digito, ctx)
+{
+    var angulo = digito * (360 / 24);
+    var ponto = getPoint(angulo, size*0.9);
+    
+    
+    ctx.font = "24px Arial";            
+
+    var content = "";
+
+    if (digito == 0)
+    {
+        content = "24";
+    }
+    else
+    {
+        content = digito.toString();
+    }
+    
+    var x = (ponto.x + size);
+    var y = (size - ponto.y);
+    
+    ctx.fillText(content,x,y); 
+    
+}
+        
+function mostraminutos(digito, ctx)
+{
+    var angulo = digito * (360 / 60);
+    var ponto = getPoint(angulo, size*0.7);
+
+    ctx.font = "16px Arial";
+    if (digito % 5 != 0) ctx.font = "10px Arial";
+
+    var content = "";
+
+    if (digito == 0)
+    {
+        content = "0";
+    }
+    else
+    {
+        content = digito.toString();
+    }
+    if (canvassize < 520 && digito%5!=0) content = "·";
+    var x = (ponto.x + size);
+    var y = (size - ponto.y);
+    
+    ctx.fillText(content,x,y);
+}        
+
+function mostrasegundos(digito)
+{
+    var angulo = digito * (360 / 60);
+    var ponto = getPoint(angulo, size*0.5);
+
+    ctx.font = "12px Arial";            
+
+    var content = "";
+
+    if (digito == 0)
+    {
+        content = "0";
+    }
+    else
+    {
+        content = digito.toString();
+    }
+    if (digito % 5 != 0) content = "·";
+    
+    var x = (ponto.x + size);
+    var y = (size - ponto.y);
+    
+    ctx.fillText(content,x,y);            
+}        
+
+function getPoint(angulo, hipotenusa)
+{
+    var cateto1, cateto2;
+    cateto1 = Math.sin(angulo * Math.PI / 180) * hipotenusa;
+    cateto2 = Math.cos(angulo * Math.PI / 180) * hipotenusa;
+    return { x:cateto1, y:cateto2};
+}
+
+</script> 
+
+</body>
+</html>
+
