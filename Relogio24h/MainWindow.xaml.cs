@@ -32,9 +32,9 @@ namespace Relogio24h
 
             size = canvas.Width / 2;
 
-            hipotenusaHora = size * 0.45;
-            hipotenusaMinuto = size * 0.85;
-            hipotenusaSegundo = size * 0.85;
+            hipotenusaHora = size * 0.81;
+            hipotenusaMinuto = size * 0.61;
+            hipotenusaSegundo = size * 0.45;
 
             for (int i = 0; i < 24; i++)
             {
@@ -44,6 +44,11 @@ namespace Relogio24h
             for (int i = 0; i < 60; i++)
             {
                 mostraminutos(i);
+            }
+
+            for (int i = 0; i < 60; i++)
+            {
+                mostrasegundos(i);
             }
 
             PonteiroHoras.X1 = size; //centro x horas
@@ -103,12 +108,12 @@ namespace Relogio24h
         private void mostrahoras(int digito)
         {
             int angulo = digito * (360 / 24);
-            var ponto = getPoint(angulo, size*1);
+            var ponto = getPoint(angulo, size*0.9);
 
             var numero = new Label();
 
             numero.FontSize = 24;
-            numero.FontWeight = FontWeights.Bold;
+            numero.FontWeight = FontWeights.Regular;
             numero.Width = numero.Height = 40;            
             numero.VerticalContentAlignment = VerticalAlignment.Center;
             numero.HorizontalContentAlignment = HorizontalAlignment.Center;
@@ -131,14 +136,16 @@ namespace Relogio24h
             canvas.Children.Add(numero);
         }
 
-        private void mostraminutos(int digito)
+        private void mostraminutos(int digito, int fontsize=16)
         {
             int angulo = digito * (360 / 60);
-            var ponto = getPoint(angulo, size*0.9);
+            var ponto = getPoint(angulo, size*0.7);
 
             var numero = new Label();
 
-            numero.FontSize = 16;
+            numero.FontSize = fontsize;
+            if (digito % 5 != 0) numero.FontSize = 10;
+
             numero.FontWeight = FontWeights.Regular;
             numero.Width = numero.Height = 40;
             numero.VerticalContentAlignment = VerticalAlignment.Center;
@@ -152,6 +159,7 @@ namespace Relogio24h
             {
                 numero.Content = digito.ToString();
             }
+            //if (digito % 5 != 0) numero.Content = ".";
 
             var x = (ponto.X + size) - numero.Width / 2;
             var y = (size - ponto.Y) - numero.Height / 2;
@@ -160,7 +168,39 @@ namespace Relogio24h
             Canvas.SetTop(numero, y);
 
             canvas.Children.Add(numero);
-        }
+        }        
+
+        private void mostrasegundos(int digito)
+        {
+            int angulo = digito * (360 / 60);
+            var ponto = getPoint(angulo, size * 0.5);
+
+            var numero = new Label();
+
+            numero.FontSize = 12;
+            numero.FontWeight = FontWeights.Regular;
+            numero.Width = numero.Height = 40;
+            numero.VerticalContentAlignment = VerticalAlignment.Center;
+            numero.HorizontalContentAlignment = HorizontalAlignment.Center;
+
+            if (digito == 0)
+            {
+                numero.Content = "0";
+            }
+            else
+            {                
+                numero.Content = digito.ToString();
+            }
+            if (digito % 5 != 0) numero.Content = ".";
+
+            var x = (ponto.X + size) - numero.Width / 2;
+            var y = (size - ponto.Y) - numero.Height / 2;
+
+            Canvas.SetLeft(numero, x);
+            Canvas.SetTop(numero, y);
+
+            canvas.Children.Add(numero);
+        }      
 
         private void sethoras(int hora)
         {
